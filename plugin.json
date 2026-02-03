@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schemas.openclaw.ai/plugin.json",
+  "name": "constitutionguard-proposer",
+  "version": "0.1.0",
+  "description": "Cardano governance action preparation with constitution compliance",
+  "entry": "dist/index.js",
+  "tools": [
+    {
+      "name": "governance_intake",
+      "description": "Conduct structured interview to gather proposal details"
+    },
+    {
+      "name": "constitution_check",
+      "description": "Analyze proposal against Cardano Constitution"
+    },
+    {
+      "name": "cip108_generate",
+      "description": "Generate CIP-108 compliant metadata"
+    },
+    {
+      "name": "cip108_validate",
+      "description": "Validate metadata against CIP-108 schema"
+    }
+  ],
+  "config": {
+    "BLOCKFROST_API_KEY": {
+      "type": "string",
+      "required": true,
+      "description": "Blockfrost API key for Cardano data"
+    },
+    "CARDANO_NETWORK": {
+      "type": "string",
+      "required": false,
+      "default": "mainnet",
+      "enum": ["mainnet", "preprod", "preview"]
+    }
+  }
+}

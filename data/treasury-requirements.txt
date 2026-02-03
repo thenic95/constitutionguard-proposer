@@ -1,0 +1,88 @@
+How to Request Funding from the Cardano Treasury Under the New Constitution
+As Cardano is operating under a new Constitution since January 24, many requirements have evolved compared to version v1. It is worthwhile to explore exactly which new requirements now apply to governance actions. If you want to read more about the general changes of the new Constitution, I can recommend another article of mine and a well-written piece from @ArmyofSpies 
+For this article, I want to focus on the new requirements for the Treasury Withdrawal Governance Action Type and the specific information proposers must provide in the metadata to comply with the Cardano Constitution.
+1. General Requirements for All Governance Actions
+The baseline requirements for all governance actions are set out in Article II, Section 6. To ensure transparency and legitimacy, every action must adhere to the following:
+Standardized Format & Context: Actions must follow a standardized, legible format . This includes a URL hosting a document outlining additional context, along with the hash of that document . 
+Why this matters: The hash ensures integrity. Any change in the metadata file compared to the version used to derive the hash would immediately be exposed.
+Immutability: The document hosted by the URL must be immutable and incapable of being altered after submission .
+Implication: While the Constitution specifies the property of immutability rather than a specific technology, this effectively enforces the use of immutable, content-addressable storage (like IPFS). This prevents the proposal’s abstract, rationale, or budget from being altered or removed during voting, safeguarding against "link rot" and preserving historical context.
+On-Chain Consistency: The content of every on-chain Governance Action must be identical to the final off-chain version of the proposed action .
+Example: You cannot have metadata describing a 1,000,000 ada withdrawal if the actual on-chain parameters trigger a withdrawal of 1,000,001 ada.        
+Sufficient Rationale: Each proposal must provide a rationale that includes, at a minimum: Title, Abstract, Justification and Relevant supporting materials.
+2. Specific Requirements for Treasury Withdrawals
+When it comes to Treasury Withdrawal Governance Actions, Article II, Section 7 mandates several additional layers of accountability:
+Terms of the Withdrawal: The proposal must clearly specify the terms, including :
+1. The purpose of the withdrawal.      
+2. The delivery period for the proposed activities.        
+3. The relevant costs and expenses.        
+4. Circumstances under which the withdrawal might be refunded to the Cardano Treasury.
+Prior Funding Disclosure: The prospective recipient must disclose whether they have received ada from the Cardano Treasury within the last 24 months .
+Best Practice: I recommend disclosing exact amounts, even if the funding came via a third party (e.g., via Catalyst or a Builder DAO).
+Net Change Limit: The requested amount must not exceed the Net Change Limit applicable for that period .
+Audit Allocation: The request must include an allocation of ada to cover the costs of periodic independent audits and the implementation of oversight metrics regarding the use of the funds .
+Administrator Designation: The action must designate one or more administrators responsible for monitoring how funds are used and ensuring deliverables are achieved .
+Fund Segregation & Voting Restrictions: If an administrator holds the ada prior to disbursement, two critical rules apply:
+1. The funds must be kept in separate accounts that can be audited by the Cardano Community.
+2. These accounts must not be delegated to a Stake Pool Operator (SPO) and must be delegated to the predefined abstain voting option.
+
+Why this matters: This ensures administrators do not benefit financially from staking rewards on funds meant for someone else, nor do they gain undue political influence through increased voting power.
+3. Applicable Guardrails
+Finally, let us look at the Cardano Blockchain Guardrails (Appendix I). For all treasury withdrawals, guardrails TREASURY-01a through TREASURY-03a apply:
+TREASURY-01a: A Net Change Limit for the Treasury balance must be agreed upon by DReps via an on-chain governance action with a threshold of greater than 50% of the active voting stake .
+TREASURY-02a: Withdrawals must not exceed the Net Change Limit for that period .
+TREASURY-03a: All withdrawals from the Cardano Treasury must be denominated in ada .
+Treasury Withdrawal Compliance Checklist
+Use this checklist to ensure your governance action proposal meets all constitutional requirements before submission:
+markdown
+**General Governance Action Requirements**
+
+- [ ] **Standardized Format:** The proposal follows a legible and standardized format.
+    
+- [ ] **Context URL & Hash:** Includes a URL to a document with additional context and the correct hash of that document.
+    
+- [ ] **Immutability:** The hosted document is immutable (cannot be altered after submission).
+    
+- [ ] **Consistency:** The on-chain action content is identical to the final off-chain version.
+    
+- **Rationale:** The proposal includes a:
+
+    - [ ] Title        
+
+    - [ ] Abstract        
+
+    - [ ] Justification        
+
+    - [ ] Relevant supporting materials.
+
+**Specific Treasury Withdrawal Requirements**
+
+- [ ] **Terms of Withdrawal:** The proposal specifies:
+    
+    - [ ] Purpose of the withdrawal.
+        
+    - [ ] Delivery period for activities.
+        
+    - [ ] Costs and expenses.
+        
+    - [ ] Refund circumstances.
+        
+- [ ] **Funding Disclosure:** Discloses if the recipient received Cardano Treasury ada in the last 24 months.
+    
+- [ ] **Net Change Limit:** The requested amount does not exceed the current Net Change Limit.
+    
+- [ ] **Audit Allocation:** Includes an allocation of ada for periodic independent audits and oversight metrics.
+    
+- [ ] **Currency:** The withdrawal is denominated in ada.
+
+**Administrator & Fund Management**
+
+- [ ] **Administrator:** Designates one or more administrators to monitor fund usage and deliverables.
+    
+- [ ] **Separate Accounts:** Administrator-held funds are kept in separate, community-auditable accounts.
+    
+- **Voting and Delegation Restriction:** 
+
+    - [ ] Administrator-held funds are delegated to the **auto-abstain** voting option 
+
+    - [ ] Administrator-held funds are NOT delegated to a SPO.
