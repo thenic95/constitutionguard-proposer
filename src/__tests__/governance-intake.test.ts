@@ -15,6 +15,14 @@ describe('governanceIntake', () => {
       expect(result.data?.amount).toBe('500000');
     });
 
+    it('should extract action type from free text', async () => {
+      const input = "Treasury withdrawal: 500,000 ADA for DeFi";
+      const result = await governanceIntake(input);
+      
+      // Should detect action type even if incomplete
+      expect(result.data?.actionType).toBe('TreasuryWithdrawal');
+    });
+
     it('should detect amount with commas', async () => {
       const input = "Requesting 1,000,000 ADA for project funding";
       const result = await governanceIntake(input);

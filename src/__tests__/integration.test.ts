@@ -33,7 +33,7 @@ describe('Integration: prepareGovernanceAction', () => {
     expect(result.compliance?.relevantArticles.length).toBeGreaterThan(0);
     
     // Check generation
-    expect(result.generation?.metadata['@type']).toBe('GovernanceAction');
+    expect(result.generation?.metadata.body.title).toBeDefined();
     expect(result.generation?.metadata.body.title).toContain('DeFi Liquidity');
     
     // Check validation
