@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+  constitutionguard:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - BLOCKFROST_API_KEY=${BLOCKFROST_API_KEY:-}
+      - CARDANO_NETWORK=${CARDANO_NETWORK:-preprod}
+      - PAYMENT_SERVICE_URL=http://masumi-payment:3001
+      - PAYMENT_API_KEY=${PAYMENT_API_KEY:-}
+      - SELLER_VKEY=${SELLER_VKEY:-}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/availability"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      masumi-payment:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: masumi
+      POSTGRES_PASSWORD: masumi
+      POSTGRES_DB: masumi
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U masumi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  masumi-payment:
+    image: ghcr.io/masumi-network/masumi-payment-service:latest
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgresql://masumi:masumi@postgres:5432/masumi
+      ADMIN_API_KEY: ${PAYMENT_API_KEY:-default-dev-key}
+      CARDANO_NETWORK: ${CARDANO_NETWORK:-preprod}
+      BLOCKFROST_API_KEY: ${BLOCKFROST_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3001/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  masumi-registry:
+    image: ghcr.io/masumi-network/masumi-registry-service:latest
+    ports:
+      - "3002:3002"
+    environment:
+      DATABASE_URL: postgresql://masumi:masumi@postgres:5432/masumi
+      ADMIN_API_KEY: ${PAYMENT_API_KEY:-default-dev-key}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:

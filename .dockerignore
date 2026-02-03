@@ -1,0 +1,11 @@
+node_modules/
+src/
+.git/
+.gitignore
+coverage/
+*.md
+.env
+.env.*
+!.env.example
+docker-compose.yml
+.claude/
