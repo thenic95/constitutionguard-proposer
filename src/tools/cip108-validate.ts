@@ -3,7 +3,7 @@
  * Validates metadata against CIP-108 schema using AJV
  */
 
-import Ajv from 'ajv';
+import Ajv, { ValidateFunction, ErrorObject } from 'ajv';
 import { CIP108Metadata } from './cip108-generate';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -18,12 +18,12 @@ export interface ValidationResult {
 }
 
 // Cache compiled validator
-let validator: Ajv.ValidateFunction | null = null;
+let validator: ValidateFunction | null = null;
 
 /**
  * Load and compile CIP-108 schema
  */
-function getValidator(): Ajv.ValidateFunction {
+function getValidator(): ValidateFunction {
   if (validator) {
     return validator;
   }
@@ -103,7 +103,7 @@ function checkBusinessRules(metadata: CIP108Metadata): string[] {
 /**
  * Format AJV errors into readable format
  */
-function formatErrors(ajvErrors: Ajv.ErrorObject[]): Array<{path: string; message: string}> {
+function formatErrors(ajvErrors: ErrorObject[]): Array<{path: string; message: string}> {
   return ajvErrors.map(error => {
     const path = error.instancePath || 'root';
     let message = error.message || 'Unknown error';
