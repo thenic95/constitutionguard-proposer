@@ -53,6 +53,7 @@ export interface CIP108Metadata {
       };
     };
   };
+  '@type': 'GovernanceAction';
   authors: any[];
   hashAlgorithm: 'blake2b-256';
   body: {
@@ -184,6 +185,7 @@ export async function cip108Generate(proposal: ProposalData): Promise<Generation
   // Build the metadata structure
   const metadata: CIP108Metadata = {
     '@context': CIP108_CONTEXT,
+    '@type': 'GovernanceAction',
     authors: [], // Authors to be added when signing
     hashAlgorithm: 'blake2b-256',
     body: {

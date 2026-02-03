@@ -65,7 +65,7 @@ describe('governanceIntake', () => {
       const result = await governanceIntake(input);
       
       expect(result.status).toBe('incomplete');
-      expect(result.questions).toContain(expect.stringContaining('type of governance action'));
+      expect(result.questions).toContainEqual(expect.stringContaining('type of governance action'));
     });
   });
 

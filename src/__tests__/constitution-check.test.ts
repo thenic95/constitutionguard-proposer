@@ -76,7 +76,7 @@ describe('constitutionCheck', () => {
         title: 'Test',
         abstract: 'Requesting funds',
         motivation: 'We need it',
-        rationale: 'Good idea without audit mention',
+        rationale: 'Good idea without independent review mention',
         amount: '500000',
         recipient: 'addr123',
         purpose: 'Project',

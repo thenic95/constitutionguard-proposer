@@ -5,19 +5,19 @@
 import { cip108Generate, addAuthor, addReference, metadataToJson } from '../tools/cip108-generate';
 import { ProposalData } from '../tools/governance-intake';
 
-describe('cip108Generate', () => {
-  const baseProposal: ProposalData = {
-    actionType: 'TreasuryWithdrawal',
-    title: 'Cardano DeFi Liquidity Budget - Withdrawal 1',
-    abstract: 'This proposal requests 500,000 ADA from the treasury for establishing legal framework and smart contract infrastructure.',
-    motivation: 'The Cardano DeFi ecosystem needs liquidity support to compete with other chains.',
-    rationale: 'By providing 500K ADA liquidity, we can bootstrap DeFi protocols and attract developers.',
-    amount: '500000',
-    recipient: 'addr1q9...',
-    purpose: 'DeFi liquidity provision',
-    timeline: '6 months'
-  };
+const baseProposal: ProposalData = {
+  actionType: 'TreasuryWithdrawal',
+  title: 'Cardano DeFi Liquidity Budget - Withdrawal 1',
+  abstract: 'This proposal requests 500,000 ADA from the treasury for establishing legal framework and smart contract infrastructure.',
+  motivation: 'The Cardano DeFi ecosystem needs liquidity support to compete with other chains.',
+  rationale: 'By providing 500K ADA liquidity, we can bootstrap DeFi protocols and attract developers.',
+  amount: '500000',
+  recipient: 'addr1q9...',
+  purpose: 'DeFi liquidity provision',
+  timeline: '6 months'
+};
 
+describe('cip108Generate', () => {
   it('should generate valid CIP-108 structure', async () => {
     const result = await cip108Generate(baseProposal);
     

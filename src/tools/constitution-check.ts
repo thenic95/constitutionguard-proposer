@@ -135,7 +135,7 @@ function checkTreasuryWithdrawal(proposal: ProposalData): Array<{article: string
   if (!proposal.timeline) {
     conflicts.push({
       article: 'Article II Section 7.1',
-      issue: 'Missing: Period for delivery of proposed activities',
+      issue: 'Missing: timeline/period for delivery of proposed activities',
       severity: 'critical'
     });
   }
@@ -286,7 +286,7 @@ export async function constitutionCheck(
   if (!proposal.title || proposal.title.length < 10) {
     potentialConflicts.push({
       article: 'Article II Section 6.2',
-      issue: 'Title should be descriptive (at least 10 characters)',
+      issue: 'Title is too short - should be descriptive (at least 10 characters)',
       severity: 'warning'
     });
   }
@@ -294,7 +294,7 @@ export async function constitutionCheck(
   if (!proposal.abstract || proposal.abstract.length < 50) {
     potentialConflicts.push({
       article: 'Article II Section 6.2',
-      issue: 'Abstract should provide sufficient context (at least 50 characters)',
+      issue: 'Abstract is too short - should provide sufficient context (at least 50 characters)',
       severity: 'warning'
     });
   }

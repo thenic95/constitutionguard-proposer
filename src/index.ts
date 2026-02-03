@@ -3,7 +3,7 @@
  * Main entry point for OpenClaw integration
  */
 
-import { governanceIntake, IntakeResult, ProposalData } from './tools/governance-intake';
+import { governanceIntake, IntakeResult, ProposalData, ProposalDataSchema } from './tools/governance-intake';
 import { constitutionCheck, ComplianceReport } from './tools/constitution-check';
 import { cip108Generate, CIP108Metadata, GenerationResult } from './tools/cip108-generate';
 import { cip108Validate, ValidationResult } from './tools/cip108-validate';
@@ -44,7 +44,7 @@ export async function prepareGovernanceAction(
   try {
     // Step 1: Intake
     const intake = await governanceIntake(userInput);
-    
+
     if (intake.status === 'incomplete' || !intake.data) {
       return {
         success: false,
@@ -52,12 +52,22 @@ export async function prepareGovernanceAction(
         error: 'Intake incomplete - missing required fields'
       };
     }
-    
+
+    // Validate that intake data is complete
+    const validatedData = ProposalDataSchema.safeParse(intake.data);
+    if (!validatedData.success) {
+      return {
+        success: false,
+        intake,
+        error: 'Intake incomplete - missing required fields'
+      };
+    }
+
     // Step 2: Constitution Check
-    const compliance = await constitutionCheck(intake.data);
+    const compliance = await constitutionCheck(validatedData.data);
     
     // Step 3: Generate CIP-108 Metadata
-    const generation = await cip108Generate(intake.data);
+    const generation = await cip108Generate(validatedData.data);
     
     // Step 4: Validate
     const validation = await cip108Validate(generation.metadata);

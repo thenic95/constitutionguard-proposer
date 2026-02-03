@@ -32,7 +32,7 @@ export type ProposalData = z.infer<typeof ProposalDataSchema>;
 
 export interface IntakeResult {
   status: 'complete' | 'incomplete';
-  data?: ProposalData;
+  data?: Partial<ProposalData>;
   missingFields?: string[];
   questions?: string[];
 }
@@ -45,7 +45,7 @@ function parseInput(input: string): Partial<ProposalData> {
   const lowerInput = input.toLowerCase();
   
   // Detect action type
-  if (lowerInput.includes('treasury') || lowerInput.includes('withdraw') || lowerInput.includes('fund')) {
+  if (lowerInput.includes('treasury') || lowerInput.includes('withdraw') || lowerInput.includes('fund') || lowerInput.includes('request') && lowerInput.includes('ada')) {
     parsed.actionType = 'TreasuryWithdrawal';
   } else if (lowerInput.includes('parameter') || lowerInput.includes('protocol')) {
     parsed.actionType = 'ParameterUpdate';
@@ -61,24 +61,44 @@ function parseInput(input: string): Partial<ProposalData> {
     parsed.actionType = 'InfoAction';
   }
   
+  // Extract structured "Key: Value" fields from input
+  const fieldPatterns: Array<{ key: keyof ProposalData; pattern: RegExp }> = [
+    { key: 'title', pattern: /Title:\s*(.+?)(?:\n|$)/i },
+    { key: 'abstract', pattern: /Abstract:\s*(.+?)(?:\n|$)/i },
+    { key: 'motivation', pattern: /Motivation:\s*(.+?)(?:\n|$)/i },
+    { key: 'rationale', pattern: /Rationale:\s*(.+?)(?:\n|$)/i },
+    { key: 'recipient', pattern: /Recipient:\s*(.+?)(?:\n|$)/i },
+    { key: 'timeline', pattern: /Timeline:\s*(.+?)(?:\n|$)/i },
+    { key: 'purpose', pattern: /Purpose:\s*(.+?)(?:\n|$)/i },
+  ];
+
+  for (const { key, pattern } of fieldPatterns) {
+    const match = input.match(pattern);
+    if (match) {
+      (parsed as any)[key] = match[1].trim();
+    }
+  }
+
   // Extract amount (look for patterns like "500,000 ADA", "1000000", "1M ADA")
   const amountMatch = input.match(/(\d{1,3}(?:,\d{3})*|\d+)(?:\s*(?:M|million|k|thousand))?\s*(?:ADA|ada)?/);
   if (amountMatch) {
     parsed.amount = amountMatch[1].replace(/,/g, '');
   }
-  
-  // Extract purpose/topic
-  const purposeIndicators = ['for', 'to', 'purpose', 'goal'];
-  for (const indicator of purposeIndicators) {
-    const idx = lowerInput.indexOf(indicator);
-    if (idx !== -1) {
-      const after = input.slice(idx + indicator.length).trim();
-      const endIdx = after.search(/[.!?]|\n|(?:for|and|but)/i);
-      parsed.purpose = endIdx !== -1 ? after.slice(0, endIdx).trim() : after;
-      break;
+
+  // Extract purpose/topic (only if not already found via structured fields)
+  if (!parsed.purpose) {
+    const purposeIndicators = ['for', 'to', 'purpose', 'goal'];
+    for (const indicator of purposeIndicators) {
+      const idx = lowerInput.indexOf(indicator);
+      if (idx !== -1) {
+        const after = input.slice(idx + indicator.length).trim();
+        const endIdx = after.search(/[.!?]|\n|(?:for|and|but)/i);
+        parsed.purpose = endIdx !== -1 ? after.slice(0, endIdx).trim() : after;
+        break;
+      }
     }
   }
-  
+
   return parsed;
 }
 
@@ -192,9 +212,10 @@ export async function governanceIntake(userInput: string): Promise<IntakeResult>
   
   // Return questions for missing fields
   const questions = generateQuestions(parsed);
-  
+
   return {
     status: 'incomplete',
+    data: parsed,
     missingFields,
     questions
   };
